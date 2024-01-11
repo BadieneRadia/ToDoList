@@ -1,0 +1,115 @@
+window.onload =function () {
+    const addButton = document.getElementById('addButton');
+    const resetButton = document.getElementById('resetButton');
+
+    addButton.onclick = ajouterTache;
+    resetButton.onclick = reinitialiserTache;
+}
+
+function ajouterTache() {
+    const tache = document.getElementById('tache');
+        
+
+    if (tache.value) {
+        let newItem = document.createElement('li');
+        newItem.innerHTML = tache.value; 
+
+        $(newItem).on('swiperight',taskListAdd(newItem));
+        
+        // $(newItem).on('swiperight', function () {
+        //     $(this).toggleClass('done');
+        // });
+
+        // $(newItem).on('swipeleft', function () {
+        //     $(this).hide('slow', function () {
+        //         $(this).remove();
+        //     });
+        // });
+
+        // taskList.appendChild(newItem);
+        
+        // $(taskList).listview('refresh');
+        // tache.value = '';
+    
+        // $(newItem).on('swiperight', taskListAdd);
+
+        // $(newItem).on('swipeleft', function () {
+        //     $(this).hide('slow', listDone);
+        // });
+
+        // taskList.appendChild(newItem);
+        
+        // $(taskList).listview('refresh');
+        // tache.value = '';
+    }
+
+    
+}  
+
+function taskListAdd(newItem) {
+
+    const taskList = document.getElementById('taskList');
+    $(newItem.target ).addClass( "swiperight" );
+
+    $(newItem).on('swipeleft', function () {
+        $(this).hide('slow', listDone(newItem));
+    });
+
+    taskList.appendChild(newItem);
+    $(taskList).listview('refresh');
+        tache.value = '';
+}
+
+function listDone(newItem) {
+    const taskListDone = document.getElementById('taskListDone');
+    $(newItem.target ).addClass( "swipeleft" );
+
+    $(newItem).on('swiperight', taskListAdd(newItem));
+     
+    taskListDone.appendChild(newItem);
+    $(taskListDone).listview('refresh');
+    tache.value = '';
+}
+
+function reinitialiserTache() {
+    const tache = document.getElementById('tache');
+
+    taskList.innerHTML = '';
+}    
+
+
+
+
+
+
+$(document).on('pagecreate', function() {
+    const taskList = $("#taskList");
+    const taskListDone = $("#taskListDone");
+    const tacheInput = $("#tache");
+
+    $(document).on('swiperight', 'li', function() {
+        $(this).appendTo(taskListDone).addClass('swipe-right');
+    });
+
+    $(document).on('swipeleft', '.swipe-right', function() {
+        $(this).toggleClass('done');
+    });
+
+    $('#addButton').on('click', function() {
+        const tacheValue = tacheInput.val().trim();
+        if (tacheValue !== '') {
+            const newItem = $('<li>').text(tacheValue);
+            taskList.append(newItem);
+            tacheInput.val('');
+            taskList.listview('refresh');
+        }
+    });
+
+    $('#resetButton').on('click', function() {
+        taskList.empty();
+        taskListDone.empty();
+    });
+});
+
+
+
